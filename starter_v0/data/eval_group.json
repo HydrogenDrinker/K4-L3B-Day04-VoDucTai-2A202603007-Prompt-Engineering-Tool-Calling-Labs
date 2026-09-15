@@ -19,11 +19,11 @@
       "metadata": {"skill": "clarify_missing_asset_hardware", "difficulty": "medium", "what_it_tests": "Thiếu mã tài sản khi yêu cầu kiểm tra ổ cứng phải hỏi lại"}
     },
     {
-      "id": "G03_policy_data_privacy", "phase": "B", "suite": "group",
-      "query": "Tìm chính sách nội bộ về quyền riêng tư dữ liệu (data privacy).",
+      "id": "G03_check_device_warranty", "phase": "B", "suite": "group",
+      "query": "Kiểm tra thời hạn bảo hành phần cứng và gói dịch vụ của máy LT-204.",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "data_privacy"}}]},
-      "metadata": {"skill": "route_data_privacy_policy", "difficulty": "easy", "what_it_tests": "Tra cứu đúng chính sách data_privacy"}
+      "expect": {"tool_calls": [{"name": "check_device_warranty", "args": {"asset_id": "LT-204"}}]},
+      "metadata": {"skill": "check_device_warranty", "difficulty": "easy", "what_it_tests": "Tra cứu thông tin bảo hành máy LT-204 qua bonus tool check_device_warranty"}
     },
     {
       "id": "G04_parallel_device_hardware_network", "phase": "B", "suite": "group",
@@ -65,14 +65,14 @@
       "metadata": {"skill": "multiturn_cancel_and_switch", "difficulty": "hard", "what_it_tests": "Hủy hành động tạo ticket và chuyển sang tra cứu KB"}
     },
     {
-      "id": "G08_multiturn_employee_then_device", "phase": "B", "suite": "group",
+      "id": "G08_multiturn_clarify_then_warranty", "phase": "B", "suite": "group",
       "turns": [
-        {"role": "user", "content": "Kiểm tra tổng quan máy LT-318."},
-        {"role": "user", "content": "Không cần kiểm tra tổng quan nữa, chỉ kiểm tra riêng security của máy LT-318 giúp mình."}
+        {"role": "user", "content": "Cho mình hỏi máy tính được cấp còn được bảo hành chính hãng không?"},
+        {"role": "user", "content": "Mã máy của mình là DT-031."}
       ],
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-318", "check": "security"}}]},
-      "metadata": {"skill": "multiturn_context_switch", "difficulty": "medium", "what_it_tests": "Chuyển từ kiểm tra chung sang kiểm tra riêng security theo latest intent"}
+      "expect": {"tool_calls": [{"name": "check_device_warranty", "args": {"asset_id": "DT-031"}}]},
+      "metadata": {"skill": "multiturn_warranty_resolution", "difficulty": "medium", "what_it_tests": "Hỏi clarify khi thiếu mã máy rồi tra cứu bảo hành bằng bonus tool check_device_warranty"}
     },
     {
       "id": "G09_multiturn_ticket_confirmation", "phase": "B", "suite": "group",

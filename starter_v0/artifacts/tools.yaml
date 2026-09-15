@@ -105,3 +105,12 @@ tools:
         asset_id: {type: string, default: "", description: "Mã tài sản nếu có (ví dụ LT-204)"}
         confirmed: {type: boolean, default: false, description: "Chỉ đặt True khi người dùng đã xác nhận đồng ý rõ ràng ở lượt trước"}
       required: [summary]
+
+  # ---------------- Team-built Bonus Tool ----------------
+  - name: check_device_warranty
+    description: "Tra cứu thông tin bảo hành phần cứng và gói dịch vụ hỗ trợ doanh nghiệp của thiết bị theo mã tài sản (asset_id). Trả về ngày hết hạn bảo hành, số ngày còn lại, trạng thái (active/expiring_soon/expired), cấp độ dịch vụ chính hãng và điều kiện sửa chữa/thay thế. Chỉ gọi khi có mã máy cụ thể (LT-xxxx, DT-xxxx); nếu thiếu, bắt buộc gọi clarify."
+    parameters:
+      type: object
+      properties:
+        asset_id: {type: string, description: "Mã tài sản của thiết bị cần tra cứu bảo hành (ví dụ LT-204, DT-031)"}
+      required: [asset_id]

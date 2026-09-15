@@ -10,6 +10,8 @@ from typing import Any
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
+if hasattr(sys.stdin, "reconfigure"):
+    sys.stdin.reconfigure(encoding="utf-8")
 
 from env_loader import load_lab_env
 from providers import make_provider
@@ -150,7 +152,7 @@ def run_model_tool_loop(
 def write_transcript(path: Path, transcript: dict[str, Any]) -> None:
     transcript["updated_at"] = now_iso()
     path.parent.mkdir(parents=True, exist_ok=True)
-    path.write_text(json.dumps(transcript, ensure_ascii=False, indent=2, default=str), encoding="utf-8")
+    path.write_text(json.dumps(transcript, ensure_ascii=False, indent=2, default=str), encoding="utf-8", errors="replace")
 
 
 def main() -> None:
