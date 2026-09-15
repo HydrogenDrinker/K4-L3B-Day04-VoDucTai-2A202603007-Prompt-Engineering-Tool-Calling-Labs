@@ -1,7 +1,99 @@
 {
   "dataset_id": "day04_v3_helpdesk_group",
   "dataset_role": "group",
-  "description": "Template intentionally left empty. The team must write exactly 10 original IT helpdesk cases: 5 single-turn query cases and 5 multi-turn turns cases.",
+  "description": "Original team-authored IT helpdesk cases: 5 single-turn query cases and 5 multi-turn cases.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_check_printing_service_production", "phase": "B", "suite": "group",
+      "query": "Dịch vụ in ấn (printing) ở môi trường production có hoạt động bình thường không?",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "check_service_status", "args": {"service": "printing", "environment": "production"}}]},
+      "metadata": {"skill": "check_printing_status", "difficulty": "easy", "what_it_tests": "Kiểm tra đúng service printing trên production"}
+    },
+    {
+      "id": "G02_missing_asset_hardware_check", "phase": "B", "suite": "group",
+      "query": "Kiểm tra giúp mình xem ổ cứng máy tính bị lỗi gì không.",
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "text"}}]},
+      "metadata": {"skill": "clarify_missing_asset_hardware", "difficulty": "medium", "what_it_tests": "Thiếu mã tài sản khi yêu cầu kiểm tra ổ cứng phải hỏi lại"}
+    },
+    {
+      "id": "G03_policy_data_privacy", "phase": "B", "suite": "group",
+      "query": "Tìm chính sách nội bộ về quyền riêng tư dữ liệu (data privacy).",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "policy", "args": {"policy_area": "data_privacy"}}]},
+      "metadata": {"skill": "route_data_privacy_policy", "difficulty": "easy", "what_it_tests": "Tra cứu đúng chính sách data_privacy"}
+    },
+    {
+      "id": "G04_parallel_device_hardware_network", "phase": "B", "suite": "group",
+      "query": "Kiểm tra cả phần cứng và kết nối mạng của máy DT-031.",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [
+        {"name": "inspect_device", "args": {"asset_id": "DT-031", "check": "hardware"}},
+        {"name": "inspect_device", "args": {"asset_id": "DT-031", "check": "network"}}
+      ]},
+      "metadata": {"skill": "parallel_multi_check_device", "difficulty": "hard", "what_it_tests": "Gọi song song inspect_device với check hardware và network"}
+    },
+    {
+      "id": "G05_out_of_scope_weather", "phase": "B", "suite": "group",
+      "query": "Dự báo thời tiết hôm nay ở Hà Nội có mưa không bạn?",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {"skill": "out_of_scope_weather", "difficulty": "easy", "what_it_tests": "Yêu cầu ngoài phạm vi IT Helpdesk phải từ chối không gọi tool"}
+    },
+    {
+      "id": "G06_multiturn_clarify_then_inspect", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra giúp mình tình trạng pin laptop nhé."},
+        {"role": "user", "content": "Mã máy của mình là LT-204."},
+        {"role": "user", "content": "Chẩn đoán phần cứng (hardware) giúp mình."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-204", "check": "hardware"}}]},
+      "metadata": {"skill": "multiturn_asset_resolution", "difficulty": "medium", "what_it_tests": "Thu thập asset_id và loại check qua nhiều lượt"}
+    },
+    {
+      "id": "G07_multiturn_cancel_ticket", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tạo giúp mình ticket lỗi máy in phòng họp tầng 3."},
+        {"role": "user", "content": "Thôi máy in cắm lại dây được rồi, hủy tạo ticket giúp mình nhé."},
+        {"role": "user", "content": "Cho mình xin hướng dẫn kết nối máy in văn phòng qua Wi-Fi."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "search_kb", "args": {"category": "printing"}}]},
+      "metadata": {"skill": "multiturn_cancel_and_switch", "difficulty": "hard", "what_it_tests": "Hủy hành động tạo ticket và chuyển sang tra cứu KB"}
+    },
+    {
+      "id": "G08_multiturn_employee_then_device", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra tổng quan máy LT-318."},
+        {"role": "user", "content": "Không cần kiểm tra tổng quan nữa, chỉ kiểm tra riêng security của máy LT-318 giúp mình."}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "inspect_device", "args": {"asset_id": "LT-318", "check": "security"}}]},
+      "metadata": {"skill": "multiturn_context_switch", "difficulty": "medium", "what_it_tests": "Chuyển từ kiểm tra chung sang kiểm tra riêng security theo latest intent"}
+    },
+    {
+      "id": "G09_multiturn_ticket_confirmation", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tạo ticket sự cố sập mạng LAN tầng 4 mức high."},
+        {"role": "user", "content": "Đổi ưu tiên lên critical vì ảnh hưởng toàn bộ phòng vận hành."},
+        {"role": "user", "content": "Tôi muốn xem lại thông tin và xác nhận."}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "clarify", "args": {"response_type": "yes_no"}}]},
+      "metadata": {"skill": "multiturn_ticket_confirm", "difficulty": "hard", "what_it_tests": "Sau khi đổi priority vẫn phải dừng lại ở ranh giới xác nhận"}
+    },
+    {
+      "id": "G10_multiturn_environment_override", "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Kiểm tra dịch vụ SSO trên production."},
+        {"role": "user", "content": "À không, kiểm tra dịch vụ SSO trên môi trường staging xem có bảo trì không."}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "check_service_status", "args": {"service": "sso", "environment": "staging"}}]},
+      "metadata": {"skill": "multiturn_env_override", "difficulty": "medium", "what_it_tests": "Môi trường staging ở lượt sau ghi đè production ở lượt trước"}
+    }
+  ]
 }
